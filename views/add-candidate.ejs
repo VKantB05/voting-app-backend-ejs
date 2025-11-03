@@ -1,0 +1,60 @@
+<!-- views/add-candidate.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Add Candidate - Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50">
+  <div class="min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div>
+        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          Add New Candidate
+        </h2>
+        <p class="mt-2 text-center text-sm text-gray-600">
+          This action is for administrators only.
+        </p>
+      </div>
+
+      <div class="bg-white max-w-md w-full mx-auto p-8 md:p-10 rounded-xl shadow-lg">
+        <form action="/candidate" method="POST" class="space-y-6">
+          
+          <div>
+            <label for="name" class="text-sm font-medium text-gray-700">Candidate Name</label>
+            <div class="mt-1">
+              <input id="name" name="name" type="text" placeholder="Enter candidate's full name" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+          </div>
+
+          <div>
+            <label for="party" class="text-sm font-medium text-gray-700">Party</label>
+            <div class="mt-1">
+              <input id="party" name="party" type="text" placeholder="Enter party name (e.g., BJP, NCP)" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+          </div>
+          
+           <div>
+            <label for="age" class="text-sm font-medium text-gray-700">Age</label>
+            <div class="mt-1">
+              <input id="age" name="age" type="number" placeholder="Enter candidate's age" required class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
+          </div>
+
+          <div>
+            <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              Add Candidate
+            </button>
+          </div>
+        </form>
+      </div>
+       <p class="text-center text-sm text-gray-500">
+        <a href="/candidate" class="font-medium text-indigo-600 hover:text-indigo-500">&larr; Back to Candidates</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

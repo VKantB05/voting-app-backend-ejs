@@ -1,0 +1,65 @@
+<!-- views/profile.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>My Profile - Voting App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100">
+
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <h2 class="text-2xl font-bold text-slate-900">Voting App</h2>
+        <nav class="flex items-center space-x-4">
+          <a href="/candidate" class="text-slate-600 hover:text-indigo-600 font-medium">Candidates</a>
+          <a href="/user/logout" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">Logout</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="py-12 md:py-16">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div class="p-8">
+          <div class="flex flex-col items-center text-center">
+            <img class="h-24 w-24 rounded-full object-cover ring-4 ring-indigo-300" src="https://ui-avatars.com/api/?name=<%= user.name.replace(' ', '+') %>&background=indigo&color=fff&size=128" alt="<%= user.name %>">
+            <h1 class="mt-4 text-3xl font-bold text-slate-900"><%= user.name %></h1>
+            <p class="text-indigo-600 font-semibold capitalize"><%= user.role %></p>
+          </div>
+
+          <div class="mt-8 border-t border-gray-200 pt-8">
+            <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
+              <div class="sm:col-span-1"><dt class="text-sm font-medium text-gray-500">Aadhar Number</dt><dd class="mt-1 text-lg font-semibold text-gray-900"><%= user.AadharCard %></dd></div>
+              <div class="sm:col-span-1"><dt class="text-sm font-medium text-gray-500">Age</dt><dd class="mt-1 text-lg font-semibold text-gray-900"><%= user.age %></dd></div>
+              <div class="sm:col-span-2"><dt class="text-sm font-medium text-gray-500">Voting Status</dt><dd class="mt-2">
+                  <% if (user.isVoted) { %><div class="flex items-center p-4 bg-green-100 text-green-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg><p class="font-bold">Thank you! You have already cast your vote.</p></div>
+                  <% } else { %><div class="flex items-center p-4 bg-blue-100 text-blue-800 rounded-lg"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg><div><p class="font-bold">You have not voted yet.</p><a href="/candidate" class="text-blue-600 hover:underline">Click here to vote now!</a></div></div><% } %>
+              </dd></div>
+            </dl>
+          </div>
+
+          <!-- ======================================================= -->
+          <!-- NEW: ACTION BUTTONS FOR EDIT AND DELETE -->
+          <!-- ======================================================= -->
+          <div class="mt-8 pt-6 border-t border-gray-200 flex items-center justify-end space-x-4">
+            <a href="/user/edit" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+              Edit Profile
+            </a>
+            <form action="/user/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+              <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
+                Delete Account
+              </button>
+            </form>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,92 +1,117 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
-const { jwtAuthMiddleware, generateToken } = require("../jwt");
+const { sessionAuthMiddleware } = require('../jwt');
 
-//POST route to add a person
-router.post("/signup", async (req, res) => {
-  console.log("signup req. body :", req.body);
+router.get('/signup', (req, res) => res.render('signup', { error: null }));
+router.get('/login', (req, res) => res.render('login', { error: null }));
+
+router.get("/profile", sessionAuthMiddleware, async (req, res) => {
   try {
-    const data = req.body; // assuming the request body contains the person data
-
-    // create a new person documnet using the mongoose model
-    const newUser = new User(data);
-
-    // save the user to the database
-    const response = await newUser.save(); // Yaha await use hua hai kyunki .save() ek asynchronous operation hai.
-    console.log("User added successfully:");
-
-    const payload = {
-      id: response.id,
-    };
-    //console.log(JSON.stringify(payload));
-    const token = generateToken(payload);
-    //console.log('Generated JWT Token:', token);
-
-    res.status(200).json({ response: response, token: token });
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) return res.redirect('/login');
+    res.render('profile', { user: user });
   } catch (err) {
-    console.error("Signup error:", err);
-    res.status(500).json({ error: "Failed to add person" });
+    console.error("Error fetching profile page:", err.message);
+    res.redirect('/');
   }
 });
 
-//login route
+// NEW: GET /user/edit -> Renders the page to edit the user's profile
+router.get("/edit", sessionAuthMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) return res.redirect('/login');
+    // Render the new edit-profile.ejs page, passing the user's data
+    res.render('edit-profile', { user: user });
+  } catch (err) {
+    console.error("Error fetching edit page:", err.message);
+    res.redirect('/user/profile');
+  }
+});
+
+
+
+router.post("/signup", async (req, res) => {
+  try {
+    const newUser = new User(req.body);
+    const savedUser = await newUser.save();
+    req.session.user = { id: savedUser.id, name: savedUser.name, role: savedUser.role };
+    res.redirect('/user/profile');
+  } catch (err) {
+    let errorMessage = "An error occurred during registration.";
+    if (err.code === 11000) errorMessage = "This Aadhar number is already registered.";
+    res.render('signup', { error: errorMessage });
+  }
+});
+
 router.post("/login", async (req, res) => {
   try {
     const { AadharCard, password } = req.body;
-    const user = await User.findOne({ AadharCard: AadharCard });
-
+    const user = await User.findOne({ AadharCard });
     if (!user || !(await user.comparePassword(password))) {
-      return res.status(401).json({ error: "Invalid username or password" });
+       return res.render('login', { error: 'Invalid Aadhar or Password' });
     }
-
-    ///generate jwt token
-    const payload = {
-      id: user.id,
-    };
-    const token = generateToken(payload);
-
-    res.json({ token });
+    req.session.user = { id: user.id, name: user.name, role: user.role };
+    res.redirect('/user/profile');
   } catch (err) {
-    console.log("Login error:", err);
-    res.status(500).json({ error: "Internal Server Error" });
+    res.render('login', { error: "An internal server error occurred." });
   }
 });
 
-// profile route to get user info
-router.get("/profile", jwtAuthMiddleware, async (req, res) => {
-  try {
-    const userData = req.user; // get the user info from the request object
-    const userID = userData.id;
-    const user = await User.findById(userID);
-    res.status(200).json({ user });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "Failed to fetch user profile" });
-  }
+router.get('/logout', (req, res) => {
+    req.session.destroy(() => {
+        res.clearCookie('connect.sid');
+        res.redirect('/login');
+    });
 });
 
-router.put("/profile/password", jwtAuthMiddleware, async (req, res) => {
-  try {
-    const userId = req.user.id; // Extract the id from the token
-    const { currentPassword, newPassword } = req.body; // Extract current and new password from request body
-
-    const user = await User.findById(userId);
-
-    if (!(await user.comparePassword(currentPassword))) {
-      return res.status(401).json({ error: "Invalid username or password" });
+// NEW: POST /user/edit -> Handles the form submission to update user info
+router.post("/edit", sessionAuthMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { name, age } = req.body; // Get only the fields we allow to be updated
+        
+        await User.findByIdAndUpdate(userId, { name, age });
+        
+        console.log("User profile updated successfully:", name);
+        res.redirect('/user/profile'); // Redirect back to profile to see changes
+    } catch (err) {
+        console.error("Error updating user profile:", err.message);
+        // If there's an error, redirect back to the edit page with a message (optional)
+        res.redirect('/user/edit');
     }
+});
 
-    // update the user password
-    user.password = newPassword;
-    await user.save();
+// NEW: POST /user/delete -> Handles the deletion of the user's account
+router.post("/delete", sessionAuthMiddleware, async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const deletedUser = await User.findByIdAndDelete(userId);
+
+        if (!deletedUser) {
+            // Should not happen if user is logged in, but good practice
+            return res.redirect('/user/profile');
+        }
+
+        console.log("User account deleted successfully:", deletedUser.name);
+        
+        // Destroy the session and log the user out
+        req.session.destroy(() => {
+            res.clearCookie('connect.sid');
+            res.redirect('/signup'); // Redirect to signup page after deletion
+        });
+
+    } catch (err) {
+        console.error("Error deleting user account:", err.message);
+        res.redirect('/user/profile');
+    }
+});
+
+// The password change endpoint remains an API for simplicity
+router.post("/profile/password", sessionAuthMiddleware, async (req, res) => {
     
-    console.log("password updated successfully");
-    res.status(200).json({ message: "Password updated successfully" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
 });
+
 
 module.exports = router;

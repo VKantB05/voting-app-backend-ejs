@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Results - Voting App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100">
+
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <a href="/" class="flex items-center space-x-2">
+           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" viewBox="0 0 20 20" fill="currentColor"><path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z" /><path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
+          <h2 class="text-2xl font-bold text-slate-900">Voting App</h2>
+        </a>
+        <nav class="hidden md:flex items-center space-x-8 text-base font-medium">
+          <a href="/candidate" class="text-slate-600 hover:text-indigo-600">Candidates</a>
+          <a href="/candidate/results" class="text-indigo-600">Results</a>
+          <% if (user) { %>
+            <a href="/user/profile" class="text-slate-600 hover:text-indigo-600">My Profile</a>
+          <% } else { %>
+            <a href="/login" class="text-slate-600 hover:text-indigo-600">Login</a>
+          <% } %>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="py-12 md:py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight sm:text-5xl">Election Results</h1>
+        <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-600">The votes have been counted. Here is the final breakdown.</p>
+      </div>
+      
+      <%# This checks if the 'candidates' array exists and if any votes have been cast at all. %>
+      <% if (candidates && candidates.length > 0 && totalVotes > 0) { %>
+        
+        <%# The winner is the first item because the route sorted the array by voteCount. %>
+        <% const winner = candidates[0]; %>
+        
+        <div class="mb-12 bg-green-50 border-2 border-green-500 rounded-xl p-6 shadow-lg text-center">
+          <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800 mb-4">Winner</span>
+          <h2 class="text-3xl font-bold text-green-900"><%= winner.name %></h2>
+          <p class="text-xl font-semibold text-green-700"><%= winner.party %></p>
+          <p class="mt-2 text-4xl font-extrabold text-slate-900"><%= winner.voteCount %> Votes</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+          <h2 class="text-2xl font-bold text-slate-900 mb-6">Full Breakdown</h2>
+          <div class="space-y-6">
+            <% candidates.forEach(candidate => { %>
+              <%# The 'totalVotes' variable now comes directly from the route, making this template cleaner. %>
+              <% const percentage = totalVotes > 0 ? (candidate.voteCount / totalVotes) * 100 : 0; %>
+              <div>
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-base font-medium text-slate-700"><%= candidate.name %> - <span class="font-bold text-indigo-600"><%= candidate.party %></span></span>
+                  <span class="text-sm font-medium text-slate-700"><%= candidate.voteCount %> Votes (<%= percentage.toFixed(1) %>%)</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-4">
+                  <div class="bg-indigo-600 h-4 rounded-full" style="width: <%= percentage %>%;"></div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+           <div class="mt-8 pt-6 border-t border-gray-200 text-center">
+              <p class="text-lg font-bold text-slate-800">Total Votes Cast: <%= totalVotes %></p>
+            </div>
+        </div>
+        
+      <% } else { %>
+        <%# This block will show if there are no candidates or if no one has voted yet. %>
+        <div class="bg-white rounded-xl shadow-lg p-12 text-center">
+          <h2 class="text-2xl font-bold text-slate-800">Results are not yet available.</h2>
+          <p class="mt-2 text-slate-500">Please check back after the voting period has ended, or once votes have been cast.</p>
+        </div>
+      <% } %>
+
+    </div>
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Voting App</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <header class="bg-white shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center py-4">
+        <div class="flex items-center space-x-2">
+           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" viewBox="0 0 20 20" fill="currentColor"><path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z" /><path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
+          <h2 class="text-2xl font-bold text-slate-900">Voting App</h2>
+        </div>
+
+        <nav class="hidden md:flex items-center space-x-4">
+          <% if (user) { %>
+            <!-- LOGGED-IN USER VIEW -->
+            <a href="/candidate" class="font-medium text-slate-600 hover:text-indigo-600">Candidates</a>
+            <a href="/candidate/results" class="font-medium text-slate-600 hover:text-indigo-600">Results</a>
+            <a href="/user/profile" class="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">My Profile</a>
+            <a href="/user/logout" class="font-medium text-slate-600 hover:text-indigo-600">Logout</a>
+          <% } else { %>
+            <!-- ============================================= -->
+            <!-- CORRECTED GUEST VIEW -->
+            <!-- ============================================= -->
+            <a href="/candidate" class="font-medium text-slate-600 hover:text-indigo-600">Candidates</a>
+            <a href="/candidate/results" class="font-medium text-slate-600 hover:text-indigo-600">Results</a>
+            <a href="/login" class="font-medium text-slate-600 hover:text-indigo-600">Login</a>
+            <a href="/signup" class="inline-flex items-center justify-center px-5 py-2 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">Signup</a>
+          <% } %>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="relative pt-16 pb-20 px-4 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
+      <div class="absolute inset-0"><div class="bg-white h-1/3 sm:h-2/3"></div></div>
+      <div class="relative max-w-7xl mx-auto">
+        <div class="text-center">
+          <% if (user) { %>
+            <!-- LOGGED-IN USER VIEW -->
+            <h1 class="text-4xl tracking-tight font-extrabold text-slate-900 sm:text-5xl md:text-6xl">
+              <span class="block">Welcome back,</span>
+              <span class="block text-indigo-600"><%= user.name %>!</span>
+            </h1>
+            <p class="mt-4 max-w-md mx-auto text-xl text-slate-500 sm:text-2xl md:mt-6 md:max-w-3xl">You are logged in and ready to make your voice heard.</p>
+            <div class="mt-8 max-w-md mx-auto sm:flex sm:justify-center md:mt-10">
+              <div class="rounded-md shadow"><a href="/candidate" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10">Vote Now</a></div>
+              <div class="mt-3 rounded-md shadow sm:mt-0 sm:ml-3"><a href="/user/profile" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-slate-50 md:py-4 md:text-lg md:px-10">View My Profile</a></div>
+            </div>
+          <% } else { %>
+            <!-- GUEST VIEW -->
+            <h1 class="text-4xl tracking-tight font-extrabold text-slate-900 sm:text-5xl md:text-6xl">
+              <span class="block">Secure & Transparent</span>
+              <span class="block text-indigo-600">Online Voting System</span>
+            </h1>
+            <p class="mt-4 max-w-md mx-auto text-xl text-slate-500 sm:text-2xl md:mt-6 md:max-w-3xl">Make your voice heard. Participate in elections easily and securely from anywhere.</p>
+            <div class="mt-8 max-w-md mx-auto sm:flex sm:justify-center md:mt-10">
+              <div class="rounded-md shadow"><a href="/signup" class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 md:py-4 md:text-lg md:px-10">Get Started</a></div>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-white">
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm text-slate-500">
+      <p>&copy; <%= new Date().getFullYear() %> Voting App. All rights reserved.</p>
+    </div>
+  </footer>
+
+</body>
+</html>
