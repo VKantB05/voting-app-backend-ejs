@@ -1,39 +1,33 @@
-voting-app/
-│
-├── 📁 config/
-│   └── db.js                 # MongoDB connection setup
-│
-├── 📁 models/
-│   ├── user.js               # User schema (voter/admin)
-│   └── candidate.js          # Candidate schema
-│
-├── 📁 routes/
-│   ├── userRoutes.js         # Signup, Login, Profile, Password update
-│   ├── candidateRoutes.js    # Add, Update, Delete, Get candidates
-│   └── voteRoutes.js         # Vote routes (voting logic)
-│
-├── 📁 public/                 # Static files (CSS, JS, images)
-│   ├── css/
-│   │   └── style.css
-│   ├── js/
-│   │   └── script.js
-│   └── images/
-│       └── logo.png
-│
-├── 📁 views/                  # All EJS templates
-│   ├── partials/              # Common reusable layouts
-│   │   ├── header.ejs
-│   │   ├── footer.ejs
-│   │   └── navbar.ejs
-│   ├── index.ejs              # Home page
-│   ├── signup.ejs             # Signup form
-│   ├── login.ejs              # Login form
-│   ├── dashboard.ejs          # Dashboard after login
-│   ├── vote.ejs               # Voting page (list candidates, vote button)
-│   └── result.ejs             # Results page
-│
-├── 📄 jwt.js                  # JWT helper (generateToken + middleware)
-├── 📄 app.js                  # Main entry file (Express setup)
-├── 📄 .env                    # Environment variables (DB_URL, JWT_SECRET, PORT)
-├── 📄 package.json
-└── 📄 README.md
+# 🗳️ Online Voting App
+
+A secure and efficient online voting platform built with **Node.js**, **Express**, **MongoDB**, and **EJS**.  
+This project allows users to register, log in, and cast votes securely, while admins can manage candidates and monitor live results.
+
+---
+
+## 🚀 Features
+- User Signup & Login (with express-session)
+- Role-based Access (Admin & Voter)
+- Add, Update, Delete Candidates (Admin only)
+- Secure Voting System (One vote per user)
+- Password Encryption using Bcrypt
+- RESTful API routes
+- EJS frontend with dynamic views
+
+---
+
+## 🧰 Tech Stack
+- **Backend:** Node.js, Express.js  
+- **Frontend:** EJS, HTML, CSS  
+- **Database:** MongoDB  
+- **Authentication:** express-session  
+- **Deployment:** Render / Railway  
+
+---
+
+## ⚙️ Installation
+```bash
+git clone https://github.com/VKantB05/voting-app-nodejs.git
+cd voting-app-nodejs
+npm install
+npm start
