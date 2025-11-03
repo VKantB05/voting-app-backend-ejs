@@ -4,7 +4,7 @@
   "description": "A full-stack voting application with React frontend and Node.js backend",
   "main": "app.js",
   "scripts": {
-    "start": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "start": "node server.js", 
     "backend": "cd backend && npm start",
     "frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\""
